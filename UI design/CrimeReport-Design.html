@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CrimeReport — UI Design Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080C10;
+    --surface: #0F1419;
+    --surface2: #161D26;
+    --border: #1E2A36;
+    --red: #FF2D2D;
+    --red-glow: rgba(255,45,45,0.18);
+    --amber: #F59E0B;
+    --green: #10B981;
+    --blue: #38BDF8;
+    --stellar: #0E76FD;
+    --text: #E8EDF2;
+    --muted: #5A6A7A;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#050709; font-family:var(--font-body); color:var(--text); min-height:100vh; }
+
+  /* ── SCREEN SWITCHER ── */
+  .screens { display:flex; flex-direction:column; gap:80px; padding:40px 0 80px; }
+  .screen-label {
+    font-family:var(--font-display); font-size:11px; font-weight:700; letter-spacing:.2em;
+    color:var(--muted); text-transform:uppercase; text-align:center; margin-bottom:16px;
+  }
+  .screen-wrap { max-width:1280px; margin:0 auto; padding:0 24px; }
+
+  /* ── NAV ── */
+  nav {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 32px; height:60px; background:var(--surface);
+    border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
+  }
+  .nav-logo { font-family:var(--font-display); font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .logo-dot { width:8px; height:8px; background:var(--red); border-radius:50%; box-shadow:0 0 10px var(--red); animation:pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+  .nav-links { display:flex; gap:28px; }
+  .nav-links a { font-size:13px; color:var(--muted); text-decoration:none; transition:.2s; cursor:pointer; }
+  .nav-links a:hover, .nav-links a.active { color:var(--text); }
+  .nav-right { display:flex; align-items:center; gap:12px; }
+  .btn { font-family:var(--font-body); font-size:13px; font-weight:500; padding:8px 16px; border-radius:6px; border:none; cursor:pointer; transition:.2s; }
+  .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+  .btn-ghost:hover { color:var(--text); border-color:var(--muted); }
+  .btn-primary { background:var(--red); color:#fff; box-shadow:0 0 20px var(--red-glow); }
+  .btn-primary:hover { filter:brightness(1.1); }
+  .btn-stellar { background:var(--stellar); color:#fff; }
+
+  /* ── SCREEN 1: DASHBOARD / MAP ── */
+  .app-shell { display:grid; grid-template-columns:320px 1fr; height:calc(100vh - 60px); background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+
+  /* Sidebar */
+  .sidebar { background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+  .sidebar-header { padding:20px; border-bottom:1px solid var(--border); }
+  .sidebar-title { font-family:var(--font-display); font-size:14px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+  .live-badge { font-size:10px; background:rgba(16,185,129,.15); color:var(--green); padding:3px 8px; border-radius:20px; border:1px solid rgba(16,185,129,.3); display:flex; align-items:center; gap:4px; }
+  .live-dot { width:5px; height:5px; background:var(--green); border-radius:50%; animation:pulse 1.2s infinite; }
+  .stats-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+  .stat-box { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; }
+  .stat-num { font-family:var(--font-display); font-size:20px; font-weight:800; color:var(--text); }
+  .stat-num.red { color:var(--red); }
+  .stat-num.amber { color:var(--amber); }
+  .stat-label { font-size:10px; color:var(--muted); margin-top:2px; }
+  .filter-bar { padding:16px 20px; border-bottom:1px solid var(--border); }
+  .filter-label { font-size:11px; color:var(--muted); font-weight:500; margin-bottom:8px; letter-spacing:.05em; }
+  .filter-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { font-size:11px; padding:5px 10px; border-radius:20px; border:1px solid var(--border); color:var(--muted); cursor:pointer; transition:.2s; background:var(--surface2); }
+  .chip.active { background:var(--red-glow); border-color:var(--red); color:var(--red); }
+  .chip:hover { border-color:var(--muted); color:var(--text); }
+  .report-list { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .report-list::-webkit-scrollbar { width:4px; }
+  .report-list::-webkit-scrollbar-track { background:transparent; }
+  .report-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .report-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; cursor:pointer; transition:.2s; position:relative; overflow:hidden; }
+  .report-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .report-card.high::before { background:var(--red); box-shadow:2px 0 8px var(--red-glow); }
+  .report-card.medium::before { background:var(--amber); }
+  .report-card.low::before { background:var(--green); }
+  .report-card:hover { border-color:var(--muted); transform:translateX(2px); }
+  .report-card.selected { border-color:var(--red); background:rgba(255,45,45,.05); }
+  .card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .crime-type { font-family:var(--font-display); font-size:13px; font-weight:700; }
+  .severity-badge { font-size:10px; padding:2px 7px; border-radius:10px; font-weight:500; }
+  .severity-badge.high { background:rgba(255,45,45,.15); color:var(--red); }
+  .severity-badge.medium { background:rgba(245,158,11,.15); color:var(--amber); }
+  .severity-badge.low { background:rgba(16,185,129,.15); color:var(--green); }
+  .card-desc { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+  .card-meta { display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted); }
+  .meta-item { display:flex; align-items:center; gap:4px; }
+
+  /* Map area */
+  .map-area { position:relative; background:var(--bg); overflow:hidden; }
+  .map-bg {
+    position:absolute; inset:0;
+    background:
+      linear-gradient(rgba(14,22,32,.7) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,22,32,.7) 1px, transparent 1px),
+      radial-gradient(ellipse at 40% 50%, rgba(255,45,45,.06) 0%, transparent 60%),
+      #080C10;
+    background-size:40px 40px, 40px 40px, 100% 100%;
+  }
+  /* Simulated map roads */
+  .map-road { position:absolute; background:rgba(255,255,255,.04); }
+  .road-h { height:2px; left:0; right:0; }
+  .road-v { width:2px; top:0; bottom:0; }
+  /* Crime pins */
+  .crime-pin { position:absolute; transform:translate(-50%,-50%); cursor:pointer; }
+  .pin-ring {
+    width:36px; height:36px; border-radius:50%;
+    border:2px solid var(--red); background:rgba(255,45,45,.15);
+    display:flex; align-items:center; justify-content:center;
+    transition:.2s; position:relative;
+  }
+  .pin-ring::after {
+    content:''; position:absolute; inset:-6px; border-radius:50%;
+    border:1px solid rgba(255,45,45,.3); animation:ping 2s infinite;
+  }
+  @keyframes ping { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.6);opacity:0} }
+  .pin-ring.medium { border-color:var(--amber); background:rgba(245,158,11,.15); }
+  .pin-ring.medium::after { border-color:rgba(245,158,11,.3); }
+  .pin-ring.low { border-color:var(--green); background:rgba(16,185,129,.15); }
+  .pin-ring.low::after { border-color:rgba(16,185,129,.3); }
+  .pin-inner { width:10px; height:10px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); }
+  .pin-inner.medium { background:var(--amber); box-shadow:0 0 8px var(--amber); }
+  .pin-inner.low { background:var(--green); box-shadow:0 0 8px var(--green); }
+  .pin-label { position:absolute; top:calc(100% + 4px); left:50%; transform:translateX(-50%); font-size:10px; white-space:nowrap; background:rgba(8,12,16,.9); padding:3px 7px; border-radius:4px; border:1px solid var(--border); font-family:var(--font-body); color:var(--text); }
+  /* Map controls */
+  .map-controls { position:absolute; top:16px; right:16px; display:flex; flex-direction:column; gap:8px; }
+  .map-ctrl-btn { width:36px; height:36px; background:var(--surface); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:.2s; }
+  .map-ctrl-btn:hover { border-color:var(--muted); }
+  .map-search { position:absolute; top:16px; left:16px; right:70px; }
+  .map-search input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 16px 10px 36px; color:var(--text); font-family:var(--font-body); font-size:13px; outline:none; }
+  .map-search input:focus { border-color:var(--muted); }
+  .map-search input::placeholder { color:var(--muted); }
+  .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; }
+  /* Detail panel */
+  .detail-panel {
+    position:absolute; bottom:0; left:0; right:0; height:220px;
+    background:var(--surface); border-top:1px solid var(--border);
+    padding:20px 24px; display:flex; gap:24px; align-items:flex-start;
+    backdrop-filter:blur(10px);
+  }
+  .detail-icon { width:48px; height:48px; background:var(--red-glow); border:1px solid rgba(255,45,45,.3); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .detail-body { flex:1; }
+  .detail-type { font-family:var(--font-display); font-size:18px; font-weight:800; margin-bottom:4px; }
+  .detail-desc { font-size:13px; color:var(--muted); line-height:1.6; max-width:500px; margin-bottom:12px; }
+  .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .detail-tag { font-size:11px; padding:4px 10px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+  .detail-actions { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+
+  /* ── SCREEN 2: REPORT FORM ── */
+  .form-screen { background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; min-height:700px; display:grid; grid-template-columns:1fr 420px; }
+  .form-map-side { position:relative; background:var(--bg); overflow:hidden; }
+  .form-map-bg {
+    position:absolute; inset:0;
+    background:
+      linear-gradient(rgba(14,22,32,.6) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,22,32,.6) 1px, transparent 1px),
+      radial-gradient(ellipse at 60% 40%, rgba(56,189,248,.04) 0%, transparent 60%),
+      #080C10;
+    background-size:40px 40px, 40px 40px, 100% 100%;
+  }
+  .form-pin-preview { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .form-pin-anim { width:60px; height:60px; border-radius:50%; border:2px dashed var(--blue); display:flex; align-items:center; justify-content:center; animation:spin 8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .form-pin-center { width:16px; height:16px; border-radius:50%; background:var(--blue); box-shadow:0 0 20px var(--blue); position:absolute; }
+  .form-pin-label { position:absolute; top:calc(100% + 12px); left:50%; transform:translateX(-50%); font-size:12px; color:var(--blue); white-space:nowrap; font-family:var(--font-display); font-weight:700; }
+  .form-coords { position:absolute; bottom:20px; left:20px; background:rgba(8,12,16,.85); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--muted); font-family:monospace; }
+  .form-side { background:var(--surface); border-left:1px solid var(--border); padding:32px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:24px; }
+  .form-side::-webkit-scrollbar { width:4px; }
+  .form-side::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .form-heading { font-family:var(--font-display); font-size:22px; font-weight:800; line-height:1.2; }
+  .form-sub { font-size:13px; color:var(--muted); margin-top:6px; line-height:1.6; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-label { font-size:12px; font-weight:500; color:var(--muted); letter-spacing:.04em; }
+  .form-input, .form-select, .form-textarea {
+    background:var(--surface2); border:1px solid var(--border); border-radius:8px;
+    padding:11px 14px; color:var(--text); font-family:var(--font-body); font-size:13px; outline:none; transition:.2s;
+    width:100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--red); box-shadow:0 0 0 3px var(--red-glow); }
+  .form-textarea { resize:none; min-height:90px; line-height:1.6; }
+  .form-select { appearance:none; cursor:pointer; }
+  .type-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .type-option { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; cursor:pointer; transition:.2s; display:flex; align-items:center; gap:8px; font-size:12px; }
+  .type-option:hover { border-color:var(--muted); }
+  .type-option.selected { border-color:var(--red); background:var(--red-glow); color:var(--text); }
+  .type-icon { font-size:16px; }
+  .anon-toggle { display:flex; align-items:center; justify-content:space-between; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .toggle-info { font-size:13px; }
+  .toggle-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+  .toggle-switch { width:44px; height:24px; background:var(--green); border-radius:12px; position:relative; cursor:pointer; flex-shrink:0; }
+  .toggle-knob { position:absolute; right:3px; top:3px; width:18px; height:18px; background:#fff; border-radius:50%; transition:.2s; }
+  .stellar-section { background:linear-gradient(135deg, rgba(14,118,253,.1), rgba(14,118,253,.05)); border:1px solid rgba(14,118,253,.25); border-radius:10px; padding:14px; }
+  .stellar-row { display:flex; align-items:center; gap:10px; }
+  .stellar-icon { font-size:22px; }
+  .stellar-text { font-size:12px; color:var(--muted); line-height:1.5; }
+  .stellar-text strong { color:var(--blue); font-size:13px; display:block; margin-bottom:2px; }
+  .submit-btn { background:var(--red); color:#fff; border:none; border-radius:10px; padding:14px; font-family:var(--font-display); font-size:15px; font-weight:700; cursor:pointer; transition:.2s; letter-spacing:.04em; box-shadow:0 4px 24px var(--red-glow); }
+  .submit-btn:hover { filter:brightness(1.1); transform:translateY(-1px); box-shadow:0 8px 32px var(--red-glow); }
+
+  /* ── SCREEN 3: WALLET + REWARDS ── */
+  .wallet-screen { background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; padding:40px; display:grid; grid-template-columns:1fr 1fr; gap:32px; min-height:600px; }
+  .wallet-card { background:linear-gradient(135deg, #0a1628, #0e1e35); border:1px solid rgba(14,118,253,.3); border-radius:16px; padding:28px; position:relative; overflow:hidden; }
+  .wallet-card::before { content:''; position:absolute; top:-40px; right:-40px; width:150px; height:150px; background:radial-gradient(circle, rgba(14,118,253,.2), transparent 70%); border-radius:50%; }
+  .wallet-label { font-size:11px; color:var(--muted); letter-spacing:.1em; margin-bottom:16px; font-family:var(--font-display); }
+  .wallet-balance { font-family:var(--font-display); font-size:42px; font-weight:800; color:#fff; line-height:1; }
+  .wallet-balance span { font-size:20px; color:var(--stellar); margin-left:6px; }
+  .wallet-addr { font-size:11px; color:var(--muted); margin-top:10px; font-family:monospace; background:rgba(0,0,0,.3); padding:6px 10px; border-radius:6px; display:inline-block; }
+  .wallet-actions-row { display:flex; gap:10px; margin-top:20px; }
+  .w-btn { flex:1; padding:10px; border-radius:8px; border:1px solid rgba(14,118,253,.3); background:rgba(14,118,253,.1); color:var(--blue); font-size:12px; font-weight:500; cursor:pointer; transition:.2s; font-family:var(--font-body); }
+  .w-btn:hover { background:rgba(14,118,253,.2); }
+  .rewards-panel { display:flex; flex-direction:column; gap:16px; }
+  .rewards-title { font-family:var(--font-display); font-size:18px; font-weight:800; }
+  .rewards-sub { font-size:13px; color:var(--muted); }
+  .reward-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:14px; }
+  .reward-icon { width:40px; height:40px; border-radius:10px; background:rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.3); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .reward-body { flex:1; }
+  .reward-title { font-size:13px; font-weight:500; margin-bottom:2px; }
+  .reward-meta { font-size:11px; color:var(--muted); }
+  .reward-amount { font-family:var(--font-display); font-size:14px; font-weight:700; color:var(--green); }
+  .leaderboard { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; }
+  .lb-title { font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .lb-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .lb-row:last-child { border-bottom:none; }
+  .lb-rank { font-family:var(--font-display); font-size:13px; font-weight:800; color:var(--muted); width:24px; }
+  .lb-rank.gold { color:#FFD700; }
+  .lb-rank.silver { color:#C0C0C0; }
+  .lb-rank.bronze { color:#CD7F32; }
+  .lb-avatar { width:32px; height:32px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; background:var(--surface2); flex-shrink:0; }
+  .lb-name { flex:1; font-size:13px; }
+  .lb-reports { font-size:11px; color:var(--muted); }
+  .lb-xlm { font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--stellar); }
+
+  /* ── DESIGN TOKENS PANEL ── */
+  .tokens-screen { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:40px; }
+  .tokens-title { font-family:var(--font-display); font-size:22px; font-weight:800; margin-bottom:32px; }
+  .tokens-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin-bottom:32px; }
+  .token-swatch { border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+  .swatch-color { height:64px; }
+  .swatch-info { padding:10px; background:var(--surface2); }
+  .swatch-name { font-size:12px; font-weight:500; }
+  .swatch-val { font-size:11px; color:var(--muted); font-family:monospace; }
+  .type-samples { display:flex; flex-direction:column; gap:16px; }
+  .type-row { display:flex; align-items:baseline; gap:20px; padding:16px; background:var(--surface2); border-radius:10px; border:1px solid var(--border); }
+  .type-name { font-size:11px; color:var(--muted); width:120px; flex-shrink:0; font-family:monospace; }
+  .type-sample { flex:1; }
+
+  /* ── ANNOTATIONS ── */
+  .annotation { position:absolute; display:flex; align-items:center; gap:6px; pointer-events:none; }
+  .ann-line { width:40px; height:1px; background:rgba(90,106,122,.5); }
+  .ann-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); flex-shrink:0; }
+  .ann-text { font-size:10px; color:var(--muted); font-family:var(--font-body); white-space:nowrap; background:rgba(8,12,16,.8); padding:3px 8px; border-radius:4px; border:1px solid rgba(30,42,54,.8); }
+
+  /* Page header */
+  .page-header { background:var(--surface); border-bottom:1px solid var(--border); padding:32px 40px 28px; margin-bottom:0; }
+  .page-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .page-title { font-family:var(--font-display); font-size:28px; font-weight:800; }
+  .page-subtitle { font-size:14px; color:var(--muted); line-height:1.6; }
+  .screens-nav { display:flex; gap:0; border-bottom:1px solid var(--border); overflow-x:auto; padding:0 40px; background:var(--surface); }
+  .screen-tab { padding:12px 20px; font-size:13px; font-weight:500; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:.2s; white-space:nowrap; }
+  .screen-tab.active { color:var(--red); border-bottom-color:var(--red); }
+  .screen-tab:hover { color:var(--text); }
+
+  .section-divider { display:flex; align-items:center; gap:16px; padding:0 40px; margin:40px 0 24px; }
+  .div-line { flex:1; height:1px; background:var(--border); }
+  .div-label { font-family:var(--font-display); font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.2em; text-transform:uppercase; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV (persistent) -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-dot"></div>
+    CrimeReport
+  </div>
+  <div class="nav-links">
+    <a class="active">Live Map</a>
+    <a>Report Crime</a>
+    <a>My Reports</a>
+    <a>Rewards</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost">Connect Wallet</button>
+    <button class="btn btn-primary">+ Report Crime</button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-top">
+    <div class="page-title">UI Design System</div>
+    <div style="font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:6px 14px;border-radius:6px;">
+      🎨 Figma Reference · v1.0
+    </div>
+  </div>
+  <div class="page-subtitle">CrimeReport · Complete screen designs for contributor implementation · Built for Drips Stellar Wave</div>
+</div>
+
+<div class="screens">
+
+  <!-- ── SCREEN 1: LIVE MAP DASHBOARD ── -->
+  <div class="screen-wrap">
+    <div class="screen-label">Screen 01 — Live Map Dashboard</div>
+    <div class="app-shell" style="height:560px;">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">
+            Crime Feed
+            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-num red">24</div>
+              <div class="stat-label">Today</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num amber">8</div>
+              <div class="stat-label">High Risk</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">3</div>
+              <div class="stat-label">Zones</div>
+            </div>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-label">Filter by type</div>
+          <div class="filter-chips">
+            <div class="chip active">All</div>
+            <div class="chip">Theft</div>
+            <div class="chip">Assault</div>
+            <div class="chip">Robbery</div>
+            <div class="chip">Fraud</div>
+            <div class="chip">Vandalism</div>
+          </div>
+        </div>
+        <div class="report-list">
+          <div class="report-card high selected">
+            <div class="card-top">
+              <div class="crime-type">Armed Robbery</div>
+              <div class="severity-badge high">HIGH</div>
+            </div>
+            <div class="card-desc">Armed robbery at ATM on Victoria Island. 2 suspects, fled on motorcycle.</div>
+            <div class="card-meta">
+              <div class="meta-item">📍 Victoria Island</div>
+              <div class="meta-item">🕐 18:30</div>
+            </div>
+          </div>
+          <div class="report-card medium">
+            <div class="card-top">
+              <div class="crime-type">Theft</div>
+              <div class="severity-badge medium">MEDIUM</div>
+            </div>
+            <div class="card-desc">Phone snatched near Obalende bus stop during rush hour.</div>
+            <div class="card-meta">
+              <div class="meta-item">📍 Obalende</div>
+              <div class="meta-item">🕐 14:23</div>
+            </div>
+          </div>
+          <div class="report-card high">
+            <div class="card-top">
+              <div class="crime-type">Burglary</div>
+              <div class="severity-badge high">HIGH</div>
+            </div>
+            <div class="card-desc">Home broken into while residents slept. Electronics stolen.</div>
+            <div class="card-meta">
+              <div class="meta-item">📍 Lekki Phase 1</div>
+              <div class="meta-item">🕐 03:15</div>
+            </div>
+          </div>
+          <div class="report-card low">
+            <div class="card-top">
+              <div class="crime-type">Vandalism</div>
+              <div class="severity-badge low">LOW</div>
+            </div>
+            <div class="card-desc">Shop windows broken overnight along Broad Street.</div>
+            <div class="card-meta">
+              <div class="meta-item">📍 Lagos Island</div>
+              <div class="meta-item">🕐 22:45</div>
+            </div>
+          </div>
+          <div class="report-card medium">
+            <div class="card-top">
+              <div class="crime-type">Assault</div>
+              <div class="severity-badge medium">MEDIUM</div>
+            </div>
+            <div class="card-desc">Altercation outside Balogun Market, two individuals injured.</div>
+            <div class="card-meta">
+              <div class="meta-item">📍 Balogun</div>
+              <div class="meta-item">🕐 09:10</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="map-area">
+        <div class="map-bg"></div>
+        <!-- Roads -->
+        <div class="map-road road-h" style="top:30%"></div>
+        <div class="map-road road-h" style="top:55%"></div>
+        <div class="map-road road-h" style="top:75%"></div>
+        <div class="map-road road-v" style="left:25%"></div>
+        <div class="map-road road-v" style="left:55%"></div>
+        <div class="map-road road-v" style="left:78%"></div>
+
+        <!-- Pins -->
+        <div class="crime-pin" style="top:32%;left:38%">
+          <div class="pin-ring"><div class="pin-inner"></div></div>
+          <div class="pin-label">Armed Robbery</div>
+        </div>
+        <div class="crime-pin" style="top:48%;left:60%">
+          <div class="pin-ring medium"><div class="pin-inner medium"></div></div>
+          <div class="pin-label">Theft</div>
+        </div>
+        <div class="crime-pin" style="top:22%;left:72%">
+          <div class="pin-ring"><div class="pin-inner"></div></div>
+          <div class="pin-label">Burglary</div>
+        </div>
+        <div class="crime-pin" style="top:65%;left:28%">
+          <div class="pin-ring low"><div class="pin-inner low"></div></div>
+          <div class="pin-label">Vandalism</div>
+        </div>
+        <div class="crime-pin" style="top:40%;left:82%">
+          <div class="pin-ring medium"><div class="pin-inner medium"></div></div>
+          <div class="pin-label">Assault</div>
+        </div>
+        <div class="crime-pin" style="top:72%;left:55%">
+          <div class="pin-ring"><div class="pin-inner"></div></div>
+          <div class="pin-label">Robbery</div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="map-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search location or crime type…" />
+        </div>
+
+        <!-- Controls -->
+        <div class="map-controls">
+          <div class="map-ctrl-btn">＋</div>
+          <div class="map-ctrl-btn">－</div>
+          <div class="map-ctrl-btn">◎</div>
+        </div>
+
+        <!-- Detail panel -->
+        <div class="detail-panel">
+          <div class="detail-icon">🔫</div>
+          <div class="detail-body">
+            <div class="detail-type">Armed Robbery — Victoria Island</div>
+            <div class="detail-desc">Armed robbery at ATM on Adeola Odeku Street. Two suspects on a motorcycle. One victim reported injuries. Police contacted.</div>
+            <div class="detail-tags">
+              <div class="detail-tag">📅 Mar 8, 18:30</div>
+              <div class="detail-tag">🔴 High Severity</div>
+              <div class="detail-tag">🏦 ATM / Finance</div>
+              <div class="detail-tag">👤 Anonymous</div>
+              <div class="detail-tag">⛓️ On-chain</div>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn btn-primary" style="font-size:12px;padding:9px 16px;">View Full Report</button>
+            <button class="btn btn-ghost" style="font-size:12px;padding:9px 16px;">Share</button>
+            <button class="btn btn-ghost" style="font-size:12px;padding:9px 16px;">Flag as Duplicate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2: REPORT CRIME FORM ── -->
+  <div class="screen-wrap">
+    <div class="screen-label">Screen 02 — Report a Crime</div>
+    <div class="form-screen">
+      <!-- Map side -->
+      <div class="form-map-side">
+        <div class="form-map-bg"></div>
+        <!-- Roads -->
+        <div class="map-road road-h" style="top:35%"></div>
+        <div class="map-road road-h" style="top:65%"></div>
+        <div class="map-road road-v" style="left:40%"></div>
+        <div class="map-road road-v" style="left:70%"></div>
+
+        <div class="form-pin-preview">
+          <div class="form-pin-anim"></div>
+          <div class="form-pin-center"></div>
+          <div class="form-pin-label">Tap map to place marker</div>
+        </div>
+        <div class="form-coords">
+          📍 6.4698° N, 3.5852° E &nbsp;·&nbsp; Lagos, Nigeria
+        </div>
+      </div>
+
+      <!-- Form side -->
+      <div class="form-side">
+        <div>
+          <div class="form-heading">Report a Crime</div>
+          <div class="form-sub">All reports are anonymous by default. Verified reports earn XLM rewards on Stellar.</div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">CRIME TYPE</div>
+          <div class="type-grid">
+            <div class="type-option selected"><span class="type-icon">🔫</span> Robbery</div>
+            <div class="type-option"><span class="type-icon">📱</span> Theft</div>
+            <div class="type-option"><span class="type-icon">👊</span> Assault</div>
+            <div class="type-option"><span class="type-icon">🏠</span> Burglary</div>
+            <div class="type-option"><span class="type-icon">💻</span> Fraud</div>
+            <div class="type-option"><span class="type-icon">🪟</span> Vandalism</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">DESCRIPTION</div>
+          <textarea class="form-textarea" placeholder="Describe what happened — include details about the incident, suspects, or circumstances…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">DATE & TIME</div>
+          <input type="text" class="form-input" value="March 8, 2025  ·  18:30" />
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">SEVERITY</div>
+          <select class="form-select">
+            <option>🔴 High — Weapon involved or serious injury</option>
+            <option>🟡 Medium — Threat or minor injury</option>
+            <option>🟢 Low — No physical harm</option>
+          </select>
+        </div>
+
+        <div class="anon-toggle">
+          <div class="toggle-info">
+            <div>Anonymous Report</div>
+            <div class="toggle-sub">Your identity will not be revealed</div>
+          </div>
+          <div class="toggle-switch"><div class="toggle-knob"></div></div>
+        </div>
+
+        <div class="stellar-section">
+          <div class="stellar-row">
+            <div class="stellar-icon">⭐</div>
+            <div class="stellar-text">
+              <strong>Earn XLM for this report</strong>
+              Connect your Stellar wallet to receive rewards when your report is verified by the community. Powered by Soroban smart contracts.
+            </div>
+          </div>
+        </div>
+
+        <button class="submit-btn">Submit Report →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 3: WALLET & REWARDS ── -->
+  <div class="screen-wrap">
+    <div class="screen-label">Screen 03 — Stellar Wallet & Rewards</div>
+    <div class="wallet-screen">
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="wallet-card">
+          <div class="wallet-label">STELLAR WALLET</div>
+          <div class="wallet-balance">142.80 <span>XLM</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">≈ $18.42 USD</div>
+          <div class="wallet-addr">GBXP…K4F2</div>
+          <div class="wallet-actions-row">
+            <button class="w-btn">Withdraw</button>
+            <button class="w-btn">History</button>
+            <button class="w-btn">Share Address</button>
+          </div>
+        </div>
+
+        <div class="rewards-panel">
+          <div>
+            <div class="rewards-title">Recent Rewards</div>
+            <div class="rewards-sub" style="font-size:12px;color:var(--muted);margin-top:4px;">Earned from verified crime reports</div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-icon">✅</div>
+            <div class="reward-body">
+              <div class="reward-title">Robbery Report Verified</div>
+              <div class="reward-meta">Victoria Island · Mar 8 · Community verified</div>
+            </div>
+            <div class="reward-amount">+12 XLM</div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-icon">✅</div>
+            <div class="reward-body">
+              <div class="reward-title">Theft Report Verified</div>
+              <div class="reward-meta">Obalende · Mar 6 · Auto-verified</div>
+            </div>
+            <div class="reward-amount">+8 XLM</div>
+          </div>
+          <div class="reward-item">
+            <div class="reward-icon">⏳</div>
+            <div class="reward-body">
+              <div class="reward-title">Assault Report Pending</div>
+              <div class="reward-meta">Balogun · Mar 9 · Awaiting verification</div>
+            </div>
+            <div class="reward-amount" style="color:var(--muted);">Pending</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="leaderboard">
+        <div class="lb-title">🏆 Top Reporters This Month</div>
+        <div class="lb-row">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar">🦁</div>
+          <div>
+            <div class="lb-name">Anonymous Lion</div>
+            <div class="lb-reports">34 reports · 91% verified</div>
+          </div>
+          <div class="lb-xlm">+284 XLM</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank silver">2</div>
+          <div class="lb-avatar">🦅</div>
+          <div>
+            <div class="lb-name">Anonymous Eagle</div>
+            <div class="lb-reports">28 reports · 88% verified</div>
+          </div>
+          <div class="lb-xlm">+220 XLM</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-avatar">🐯</div>
+          <div>
+            <div class="lb-name">Anonymous Tiger</div>
+            <div class="lb-reports">21 reports · 95% verified</div>
+          </div>
+          <div class="lb-xlm">+176 XLM</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar">🐺</div>
+          <div>
+            <div class="lb-name">Anonymous Wolf</div>
+            <div class="lb-reports">18 reports · 83% verified</div>
+          </div>
+          <div class="lb-xlm">+142 XLM</div>
+        </div>
+        <div class="lb-row" style="background:rgba(255,45,45,.04);border-radius:8px;padding:10px 8px;border:1px solid rgba(255,45,45,.15);margin-top:8px;">
+          <div class="lb-rank" style="color:var(--red);">12</div>
+          <div class="lb-avatar" style="border-color:var(--red);">👤</div>
+          <div>
+            <div class="lb-name" style="color:var(--red);">You</div>
+            <div class="lb-reports">6 reports · 100% verified</div>
+          </div>
+          <div class="lb-xlm">+48 XLM</div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Verification powered by</div>
+          <div style="display:flex;gap:8px;">
+            <div style="background:rgba(14,118,253,.1);border:1px solid rgba(14,118,253,.25);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--stellar);display:flex;align-items:center;gap:6px;">⭐ Stellar Soroban</div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--muted);">🔐 Freighter Wallet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DESIGN TOKENS ── -->
+  <div class="screen-wrap">
+    <div class="screen-label">Design Tokens — Colors & Typography</div>
+    <div class="tokens-screen">
+      <div class="tokens-title">Colour Palette</div>
+      <div class="tokens-grid">
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#080C10;border-bottom:1px solid #1E2A36;"></div>
+          <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-val">#080C10</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#0F1419;"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-val">#0F1419</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#161D26;"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface 2</div><div class="swatch-val">#161D26</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#FF2D2D;"></div>
+          <div class="swatch-info"><div class="swatch-name">Danger Red</div><div class="swatch-val">#FF2D2D</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#F59E0B;"></div>
+          <div class="swatch-info"><div class="swatch-name">Warning Amber</div><div class="swatch-val">#F59E0B</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#10B981;"></div>
+          <div class="swatch-info"><div class="swatch-name">Safe Green</div><div class="swatch-val">#10B981</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#0E76FD;"></div>
+          <div class="swatch-info"><div class="swatch-name">Stellar Blue</div><div class="swatch-val">#0E76FD</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#38BDF8;"></div>
+          <div class="swatch-info"><div class="swatch-name">Sky Blue</div><div class="swatch-val">#38BDF8</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#E8EDF2;"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-val">#E8EDF2</div></div>
+        </div>
+        <div class="token-swatch">
+          <div class="swatch-color" style="background:#5A6A7A;"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-val">#5A6A7A</div></div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:20px;">Typography Scale</div>
+      <div class="type-samples">
+        <div class="type-row">
+          <div class="type-name">Syne / 800 / 42px</div>
+          <div class="type-sample" style="font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1;">CrimeReport</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">Syne / 800 / 28px</div>
+          <div class="type-sample" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;">Screen Heading</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">Syne / 700 / 18px</div>
+          <div class="type-sample" style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Section Title</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">DM Sans / 500 / 14px</div>
+          <div class="type-sample" style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;">Body text — clear and readable for civic audiences</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">DM Sans / 400 / 12px</div>
+          <div class="type-sample" style="font-family:'DM Sans',sans-serif;font-size:12px;color:#5A6A7A;">Caption / metadata / secondary information</div>
+        </div>
+        <div class="type-row">
+          <div class="type-name">Monospace / 11px</div>
+          <div class="type-sample" style="font-family:monospace;font-size:11px;color:#5A6A7A;">GBXP4...K4F2 · Stellar addresses · Coordinates</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:24px 40px 40px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);">
+  CrimeReport · UI Design v1.0 · Built for Drips Stellar Wave · Open Source MIT
+</div>
+
+</body>
+</html>
