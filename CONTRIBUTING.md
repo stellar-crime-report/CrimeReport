@@ -10,6 +10,7 @@ This guide covers everything you need to get from zero to your first merged PR.
 
 - [Code of Conduct](#code-of-conduct)
 - [Ways to Contribute](#ways-to-contribute)
+- [UI Design Assets](#ui-design-assets)
 - [Drips Stellar Wave](#drips-stellar-wave)
 - [Development Setup](#development-setup)
 - [Workflow](#workflow)
@@ -42,6 +43,12 @@ You don't have to be a senior engineer to contribute. Here's how different peopl
 | 📝 **Technical Writer** | Docs, tutorials, API references |
 | 🧪 **QA / Tester** | Write tests, find bugs, report issues |
 | 🌍 **Translator** | Localize the app for different languages |
+
+---
+
+## 🎨 UI Design Assets
+
+We keep the UI design files in the repo so contributors can stay aligned on visuals. You can find them in the root folder: `UI design/`.
 
 ---
 
