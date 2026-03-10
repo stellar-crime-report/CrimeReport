@@ -123,9 +123,12 @@ Open [http://localhost:3000](http://localhost:3000) — you should see the live 
 ```
 CrimeReport/
 ├── frontend/               # Next.js + React app
+│   ├── app/                # Next.js App Router routes
 │   ├── components/         # Map, ReportForm, CrimePin, etc.
-│   ├── pages/              # Next.js routes
-│   └── styles/             # TailwindCSS config
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utilities and API clients
+│   ├── types/              # TypeScript interfaces
+│   └── public/             # Static assets
 ├── backend/                # NestJS REST API
 │   ├── src/
 │   │   ├── reports/        # Crime report CRUD endpoints
@@ -143,11 +146,11 @@ CrimeReport/
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/reports` | List all crime reports |
-| `POST` | `/reports` | Submit a new report |
-| `GET` | `/reports/:id` | Get a single report |
-| `GET` | `/reports/nearby?lat=&lng=&radius=` | Get reports near a location |
-| `GET` | `/reports/hotspots` | Get clustered crime hotspots |
+| `GET` | `/api/reports` | List all crime reports |
+| `POST` | `/api/reports` | Submit a new report |
+| `GET` | `/api/reports/:id` | Get a single report |
+| `GET` | `/api/reports/nearby?lat=&lng=&radius=` | Get reports near a location |
+| `GET` | `/api/reports/hotspots` | Get clustered crime hotspots |
 
 ---
 
