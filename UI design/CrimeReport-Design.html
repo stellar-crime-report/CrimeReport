@@ -142,7 +142,7 @@
   .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; }
   /* Detail panel */
   .detail-panel {
-    position:absolute; bottom:0; left:0; right:0; height:220px;
+    position:absolute; bottom:0; left:0; right:0; min-height:240px;
     background:var(--surface); border-top:1px solid var(--border);
     padding:20px 24px; display:flex; gap:24px; align-items:flex-start;
     backdrop-filter:blur(10px);
@@ -154,6 +154,21 @@
   .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
   .detail-tag { font-size:11px; padding:4px 10px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
   .detail-actions { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+  .verification-panel { width:260px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; flex-shrink:0; }
+  .verification-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .verification-title { font-family:var(--font-display); font-size:12px; font-weight:800; letter-spacing:.04em; }
+  .verified-badge { font-size:10px; color:var(--green); background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); border-radius:20px; padding:3px 8px; white-space:nowrap; }
+  .vote-tally { display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .vote-tally strong { color:var(--text); font-weight:700; }
+  .threshold-track { height:6px; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden; margin-bottom:10px; }
+  .threshold-fill { height:100%; width:78%; background:linear-gradient(90deg,var(--green),var(--blue)); border-radius:999px; }
+  .vote-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+  .vote-btn { border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:rgba(255,255,255,.03); color:var(--text); font-family:var(--font-body); font-size:12px; cursor:pointer; transition:.2s; }
+  .vote-btn.genuine { border-color:rgba(16,185,129,.3); color:var(--green); }
+  .vote-btn.fake { border-color:rgba(255,45,45,.3); color:var(--red); }
+  .vote-btn:hover { background:rgba(255,255,255,.06); }
+  .vote-btn[disabled] { opacity:.45; cursor:not-allowed; }
+  .vote-note { font-size:10px; color:var(--muted); line-height:1.4; }
 
   /* ── SCREEN 2: REPORT FORM ── */
   .form-screen { background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; min-height:700px; display:grid; grid-template-columns:1fr 420px; }
@@ -466,6 +481,24 @@
               <div class="detail-tag">👤 Anonymous</div>
               <div class="detail-tag">⛓️ On-chain</div>
             </div>
+          </div>
+          <div class="verification-panel">
+            <div class="verification-top">
+              <div class="verification-title">Community Check</div>
+              <div class="verified-badge">Verified</div>
+            </div>
+            <div class="vote-tally">
+              <span><strong>18</strong> genuine</span>
+              <span><strong>3</strong> fake</span>
+            </div>
+            <div class="threshold-track" aria-label="Verification threshold progress">
+              <div class="threshold-fill"></div>
+            </div>
+            <div class="vote-buttons">
+              <button class="vote-btn genuine">Mark Genuine</button>
+              <button class="vote-btn fake">Mark Fake</button>
+            </div>
+            <div class="vote-note">Signed with Freighter. Repeat votes are disabled after the wallet confirms a vote.</div>
           </div>
           <div class="detail-actions">
             <button class="btn btn-primary" style="font-size:12px;padding:9px 16px;">View Full Report</button>
